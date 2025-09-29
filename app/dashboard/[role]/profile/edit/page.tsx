@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 
 export default function ProfileEditPage() {
   const params = useParams()
-  const roleParam = params.Role as string
+  const roleParam = params.role as string
   const [profileData, setProfileData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
