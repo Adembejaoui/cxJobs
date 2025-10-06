@@ -2,6 +2,7 @@ export interface ProfileField {
   name: string
   label: string
   type: "text" | "email" | "tel" | "textarea" | "select" | "multiselect" | "checkbox" | "file" | "number" | "date"
+  predefinedCategory?: "languages" | "competences" // Add this new property
   placeholder?: string
   required?: boolean
   options?: { value: string; label: string }[]
@@ -70,7 +71,7 @@ export function getProfileConfig(role: string): ProfileConfig {
         ],
       },
       {
-        id: "education",
+        id: "formations",
         title: "Formation",
         icon: "🎓",
         isArray: true,

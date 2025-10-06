@@ -21,13 +21,6 @@ import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 
-type NavItem = {
-  id: string
-  title: string
-  url: string
-  icon: React.ComponentType<any>
-}
-
 interface AppSidebarProps {
   className?: string
   Role?: string
@@ -218,7 +211,7 @@ const roleNavigation = {
     {
       id: "offres",
       title: "Mes Offres",
-      url: "/dashboard/entreprise/profile",
+      url: "/dashboard/company/jobOffer",
       icon: User,
     },
     {

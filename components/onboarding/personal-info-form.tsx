@@ -10,9 +10,10 @@ interface PersonalInfoFormProps {
   data: Record<string, any>
   onChange: (data: Record<string, any>) => void
   userType: "candidate" | "company"
+  errors?: Record<string, string>
 }
 
-export function PersonalInfoForm({ data, onChange, userType }: PersonalInfoFormProps) {
+export function PersonalInfoForm({ data, onChange, userType, errors = {} }: PersonalInfoFormProps) {
   const [formData, setFormData] = useState(data)
 
   useEffect(() => {
@@ -30,20 +31,24 @@ export function PersonalInfoForm({ data, onChange, userType }: PersonalInfoFormP
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Nom complet</Label>
+            <Label htmlFor="name">
+              Nom complet <span className="text-red-500">*</span>
+            </Label>
             <Input
-              id="fullName"
-              value={formData.fullName || ""}
-              onChange={(e) => handleChange("fullName", e.target.value)}
+              id="name"
+              value={formData.name || ""}
+              onChange={(e) => handleChange("name", e.target.value)}
               placeholder="Mohamed Ben Ali"
+              className={errors.name ? "border-red-500" : ""}
             />
+            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="professionalTitle">Titre professionnel</Label>
+            <Label htmlFor="jobTitle">Titre professionnel</Label>
             <Input
-              id="professionalTitle"
-              value={formData.professionalTitle || ""}
-              onChange={(e) => handleChange("professionalTitle", e.target.value)}
+              id="jobTitle"
+              value={formData.jobTitle || ""}
+              onChange={(e) => handleChange("jobTitle", e.target.value)}
               placeholder="Agent de support client"
             />
           </div>
@@ -51,14 +56,18 @@ export function PersonalInfoForm({ data, onChange, userType }: PersonalInfoFormP
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">
+              Email <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="email"
               type="email"
               value={formData.email || ""}
               onChange={(e) => handleChange("email", e.target.value)}
               placeholder="mohamed.benali@example.com"
+              className={errors.email ? "border-red-500" : ""}
             />
+            {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Téléphone</Label>
@@ -74,16 +83,12 @@ export function PersonalInfoForm({ data, onChange, userType }: PersonalInfoFormP
 
         <div className="space-y-2">
           <Label htmlFor="location">Localisation</Label>
-          <Select value={formData.location || ""} onValueChange={(value) => handleChange("location", value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionnez votre localisation" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="tunis">Tunis, Tunisie</SelectItem>
-              <SelectItem value="sfax">Sfax, Tunisie</SelectItem>
-              <SelectItem value="sousse">Sousse, Tunisie</SelectItem>
-            </SelectContent>
-          </Select>
+          <Input
+            id="location"
+            value={formData.location || ""}
+            onChange={(e) => handleChange("location", e.target.value)}
+            placeholder="Tunis, Tunisie"
+          />
         </div>
 
         <div className="space-y-2">
@@ -104,13 +109,17 @@ export function PersonalInfoForm({ data, onChange, userType }: PersonalInfoFormP
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="companyName">Nom de l'entreprise</Label>
+          <Label htmlFor="name">
+            Nom de l'entreprise <span className="text-red-500">*</span>
+          </Label>
           <Input
-            id="companyName"
-            value={formData.companyName || ""}
-            onChange={(e) => handleChange("companyName", e.target.value)}
+            id="name"
+            value={formData.name || ""}
+            onChange={(e) => handleChange("name", e.target.value)}
             placeholder="CallCenter Pro"
+            className={errors.name ? "border-red-500" : ""}
           />
+          {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="sector">Secteur d'activité</Label>
@@ -119,10 +128,14 @@ export function PersonalInfoForm({ data, onChange, userType }: PersonalInfoFormP
               <SelectValue placeholder="Sélectionnez le secteur" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="services">Services</SelectItem>
               <SelectItem value="technology">Technologie</SelectItem>
               <SelectItem value="finance">Finance</SelectItem>
               <SelectItem value="healthcare">Santé</SelectItem>
+              <SelectItem value="education">Éducation</SelectItem>
+              <SelectItem value="retail">Commerce</SelectItem>
+              <SelectItem value="services">Services</SelectItem>
+              <SelectItem value="manufacturing">Industrie</SelectItem>
+              <SelectItem value="other">Autre</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -130,14 +143,18 @@ export function PersonalInfoForm({ data, onChange, userType }: PersonalInfoFormP
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email entreprise</Label>
+          <Label htmlFor="email">
+            Email entreprise <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="email"
             type="email"
             value={formData.email || ""}
             onChange={(e) => handleChange("email", e.target.value)}
             placeholder="contact@callcenterpro.tn"
+            className={errors.email ? "border-red-500" : ""}
           />
+          {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Téléphone</Label>

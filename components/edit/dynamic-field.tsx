@@ -86,6 +86,7 @@ export function DynamicField({ field, value, onChange, error }: DynamicFieldProp
             className="min-h-[100px] bg-input border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200 resize-none"
           />
         )
+        
 
       case "select":
         return (
@@ -126,6 +127,7 @@ export function DynamicField({ field, value, onChange, error }: DynamicFieldProp
           "from original:",
           value,
         )
+        
 
         return (
           /* Better multiselect design with improved spacing */

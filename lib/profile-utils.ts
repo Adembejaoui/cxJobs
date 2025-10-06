@@ -124,3 +124,13 @@ export function safeParseJSON<T>(value: any, fallback: T): T {
   }
   return value || fallback
 }
+export type PredefinedCategory = "languages" | "competences";
+
+const predefinedOptions: Record<PredefinedCategory, string[]> = {
+  languages: ["French", "English", "German", "Spanish", "Italian", "Arabic"],
+  competences: ["Problem Solving", "Communication", "Leadership", "Teamwork"],
+};
+
+export function getPredefinedOptions(category: PredefinedCategory): string[] {
+  return predefinedOptions[category];
+}

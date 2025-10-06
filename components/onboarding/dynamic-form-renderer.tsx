@@ -13,9 +13,10 @@ interface DynamicFormRendererProps {
   fields: ProfileField[]
   data: Record<string, any>
   onChange: (field: string, value: any) => void
+  errors?: Record<string, string>
 }
 
-export function DynamicFormRenderer({ fields, data, onChange }: DynamicFormRendererProps) {
+export function DynamicFormRenderer({ fields, data, onChange, errors = {} }: DynamicFormRendererProps) {
   const handleMultiselectChange = (field: string, value: string, currentValues: string[] = []) => {
     const newValues = currentValues.includes(value)
       ? currentValues.filter((v) => v !== value)
@@ -38,78 +39,96 @@ export function DynamicFormRenderer({ fields, data, onChange }: DynamicFormRende
           </Label>
 
           {field.type === "text" && (
-            <Input
-              id={field.name}
-              value={data[field.name] || ""}
-              onChange={(e) => onChange(field.name, e.target.value)}
-              placeholder={field.placeholder}
-              required={field.required}
-            />
+            <>
+              <Input
+                id={field.name}
+                value={data[field.name] || ""}
+                onChange={(e) => onChange(field.name, e.target.value)}
+                placeholder={field.placeholder}
+                className={errors[field.name] ? "border-red-500" : ""}
+              />
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
+            </>
           )}
 
           {field.type === "email" && (
-            <Input
-              id={field.name}
-              type="email"
-              value={data[field.name] || ""}
-              onChange={(e) => onChange(field.name, e.target.value)}
-              placeholder={field.placeholder}
-              required={field.required}
-            />
+            <>
+              <Input
+                id={field.name}
+                type="email"
+                value={data[field.name] || ""}
+                onChange={(e) => onChange(field.name, e.target.value)}
+                placeholder={field.placeholder}
+                className={errors[field.name] ? "border-red-500" : ""}
+              />
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
+            </>
           )}
 
           {field.type === "tel" && (
-            <Input
-              id={field.name}
-              type="tel"
-              value={data[field.name] || ""}
-              onChange={(e) => onChange(field.name, e.target.value)}
-              placeholder={field.placeholder}
-              required={field.required}
-            />
+            <>
+              <Input
+                id={field.name}
+                type="tel"
+                value={data[field.name] || ""}
+                onChange={(e) => onChange(field.name, e.target.value)}
+                placeholder={field.placeholder}
+                className={errors[field.name] ? "border-red-500" : ""}
+              />
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
+            </>
           )}
 
           {field.type === "number" && (
-            <Input
-              id={field.name}
-              type="number"
-              value={data[field.name] || ""}
-              onChange={(e) => onChange(field.name, e.target.value ? Number(e.target.value) : "")}
-              placeholder={field.placeholder}
-              required={field.required}
-            />
+            <>
+              <Input
+                id={field.name}
+                type="number"
+                value={data[field.name] || ""}
+                onChange={(e) => onChange(field.name, e.target.value ? Number(e.target.value) : "")}
+                placeholder={field.placeholder}
+                className={errors[field.name] ? "border-red-500" : ""}
+              />
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
+            </>
           )}
 
           {field.type === "textarea" && (
-            <Textarea
-              id={field.name}
-              value={data[field.name] || ""}
-              onChange={(e) => onChange(field.name, e.target.value)}
-              placeholder={field.placeholder}
-              required={field.required}
-              rows={4}
-            />
+            <>
+              <Textarea
+                id={field.name}
+                value={data[field.name] || ""}
+                onChange={(e) => onChange(field.name, e.target.value)}
+                placeholder={field.placeholder}
+                rows={field.rows || 4}
+                className={errors[field.name] ? "border-red-500" : ""}
+              />
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
+            </>
           )}
 
           {field.type === "select" && (
-            <Select value={data[field.name] || ""} onValueChange={(value) => onChange(field.name, value)}>
-              <SelectTrigger>
-                <SelectValue placeholder={field.placeholder || `Sélectionnez ${field.label.toLowerCase()}`} />
-              </SelectTrigger>
-              <SelectContent>
-                {field.options?.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <>
+              <Select value={data[field.name] || ""} onValueChange={(value) => onChange(field.name, value)}>
+                <SelectTrigger className={errors[field.name] ? "border-red-500" : ""}>
+                  <SelectValue placeholder={field.placeholder || `Sélectionnez ${field.label.toLowerCase()}`} />
+                </SelectTrigger>
+                <SelectContent>
+                  {field.options?.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
+            </>
           )}
 
           {field.type === "multiselect" && (
             <div className="space-y-3">
               <Select onValueChange={(value) => handleMultiselectChange(field.name, value, data[field.name] || [])}>
-                <SelectTrigger>
+                <SelectTrigger className={errors[field.name] ? "border-red-500" : ""}>
                   <SelectValue placeholder={field.placeholder || `Sélectionnez ${field.label.toLowerCase()}`} />
                 </SelectTrigger>
                 <SelectContent>
@@ -137,6 +156,8 @@ export function DynamicFormRenderer({ fields, data, onChange }: DynamicFormRende
                   })}
                 </div>
               )}
+
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
             </div>
           )}
 
@@ -154,17 +175,25 @@ export function DynamicFormRenderer({ fields, data, onChange }: DynamicFormRende
           )}
 
           {field.type === "file" && (
-            <Input
-              id={field.name}
-              type="file"
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                if (file) {
-                  onChange(field.name, file)
-                }
-              }}
-              accept="image/*"
-            />
+            <>
+              <Input
+                id={field.name}
+                type="file"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    onChange(field.name, file)
+                  }
+                }}
+                accept={field.accept || "image/*"}
+                className={errors[field.name] ? "border-red-500" : ""}
+              />
+              {errors[field.name] && <p className="text-sm text-red-500">{errors[field.name]}</p>}
+            </>
+          )}
+
+          {field.description && !errors[field.name] && (
+            <p className="text-sm text-muted-foreground">{field.description}</p>
           )}
         </div>
       ))}

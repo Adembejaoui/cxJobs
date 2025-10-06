@@ -85,7 +85,31 @@ model Company {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("companies")
+  JobOffer JobOffer[]
 }
+model JobOffer {
+  id              String      @id @default(cuid())
+  title           String
+  location        String
+  contractType    String
+  salaryMin       Float?      // optional
+  salaryMax       Float?      // optional
+  workMode        String      // "sur site" | "hybride" | "teletravail"
+  description     String
+  expirationDate  String?
+  visibility      String?
+  status          String 
+  applicationMode Json        // { viaCxJobs: Boolean, atsUrl: String? }
+  requirements    Json        // { skills: [String], languages: [String], benefits: [String]? }
+  recruitment     Json        // [{ title, duration, description }]
+  
+  company         Company     @relation(fields: [companyId], references: [id])
+  companyId       String
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
 
 model CompanyInvitation {
   id        String   @id @default(cuid())

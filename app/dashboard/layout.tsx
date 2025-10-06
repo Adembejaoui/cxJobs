@@ -14,7 +14,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const params = useParams()
-  const role = params.Role as string
+  const role = params.role as string
 
   console.log("[v0] Dashboard layout - Current role:", role)
 

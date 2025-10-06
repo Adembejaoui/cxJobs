@@ -6,7 +6,8 @@ import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, ArrowRight, Ship as Skip, CheckCircle } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ArrowLeft, ArrowRight, Ship as Skip, CheckCircle, AlertCircle } from "lucide-react"
 import { OnboardingStep } from "@/components/onboarding/onboarding-step"
 import { PersonalInfoForm } from "@/components/onboarding/personal-info-form"
 import { DynamicListForm } from "@/components/onboarding/dynamic-list-form"
@@ -30,6 +31,7 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingData, setIsLoadingData] = useState(true)
   const [userRole, setUserRole] = useState<"candidate" | "company">("candidate")
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     personalInfo: {},
@@ -47,14 +49,14 @@ export default function OnboardingPage() {
   useEffect(() => {
     const loadProfileData = async () => {
       if (status === "loading") return
-       if(userRole !== "candidate"){
-         router.push(`dashboard/${userRole}/profile`)
+      if (userRole !== "candidate") {
+        router.push(`dashboard/${userRole}/profile`)
       }
       if (!session?.user?.email) {
         router.push("/auth/signin")
         return
       }
-     
+
       if (session.user.onboardingCompleted == true) {
         router.push(`dashboard/${session.user.role}/profile`)
       }
@@ -65,7 +67,6 @@ export default function OnboardingPage() {
 
         if (response.ok) {
           const data = await response.json()
-          console.log("[v0] Loaded profile data:", data)
 
           if (data.profileData) {
             setOnboardingData({
@@ -109,7 +110,120 @@ export default function OnboardingPage() {
     loadProfileData()
   }, [session, status, router])
 
+  const validateCurrentStep = (): { isValid: boolean; error?: string } => {
+    const currentSection = steps[currentStep]
+
+    // Personal info MUST be completed - cannot skip
+    if (currentSection.id === "personalInfo" || currentSection.id === "companyInfo") {
+      const requiredFields = currentSection.fields.filter((field) => field.required)
+      const missingFields: string[] = []
+
+      for (const field of requiredFields) {
+        const value = onboardingData.personalInfo[field.name]
+        if (!value || (typeof value === "string" && value.trim() === "")) {
+          missingFields.push(field.label)
+        }
+      }
+
+      if (missingFields.length > 0) {
+        return {
+          isValid: false,
+          error: `Les informations personnelles sont obligatoires. Veuillez remplir: ${missingFields.join(", ")}`,
+        }
+      }
+    }
+
+    return { isValid: true }
+  }
+
+  const validateAndCheckIncompleteItems = (): { hasIncomplete: boolean; incompleteCount: number } => {
+    const currentSection = steps[currentStep]
+
+    if (currentSection.isArray) {
+      const arrayType = currentSection.id as keyof OnboardingData
+      const items = onboardingData[arrayType] as any[]
+
+      if (items && items.length > 0) {
+        const requiredFields = currentSection.fields.filter((field) => field.required).map((f) => f.name)
+
+        // Check for incomplete items
+        const incompleteItems = items.filter((item) => {
+          return !requiredFields.every((field) => {
+            const value = item[field]
+            return value && (typeof value !== "string" || value.trim() !== "")
+          })
+        })
+
+        return {
+          hasIncomplete: incompleteItems.length > 0,
+          incompleteCount: incompleteItems.length,
+        }
+      }
+    }
+
+    return { hasIncomplete: false, incompleteCount: 0 }
+  }
+
+  const cleanupIncompleteItems = () => {
+    const currentSection = steps[currentStep]
+
+    if (currentSection.isArray) {
+      const arrayType = currentSection.id as keyof OnboardingData
+      const items = onboardingData[arrayType] as any[]
+
+      if (items && items.length > 0) {
+        const requiredFields = currentSection.fields.filter((field) => field.required).map((f) => f.name)
+
+        // Filter out incomplete items
+        const completeItems = items.filter((item) => {
+          return requiredFields.every((field) => {
+            const value = item[field]
+            return value && (typeof value !== "string" || value.trim() !== "")
+          })
+        })
+
+        // Update the data with only complete items
+        setOnboardingData((prev) => ({
+          ...prev,
+          [arrayType]: completeItems,
+        }))
+      }
+    }
+  }
+
   const handleNext = () => {
+    setValidationError(null)
+    const currentSection = steps[currentStep]
+
+    if (currentSection.isArray) {
+      // Check if there are incomplete items
+      const { hasIncomplete, incompleteCount } = validateAndCheckIncompleteItems()
+
+      if (hasIncomplete) {
+        setValidationError(
+          `Vous avez ${incompleteCount} élément(s) incomplet(s). Veuillez compléter tous les champs obligatoires ou cliquer sur "Ignorer" pour continuer sans ces éléments.`,
+        )
+        window.scrollTo({ top: 0, behavior: "smooth" })
+        return
+      }
+
+      // If all items are complete, proceed to next step
+      if (currentStep < steps.length - 1) {
+        setCurrentStep(currentStep + 1)
+      } else {
+        handleComplete()
+      }
+      return
+    }
+
+    const validation = validateCurrentStep()
+
+    if (!validation.isValid) {
+      setValidationError(validation.error || "Veuillez compléter tous les champs obligatoires")
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      return
+    }
+
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
@@ -118,12 +232,25 @@ export default function OnboardingPage() {
   }
 
   const handlePrevious = () => {
+    setValidationError(null)
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
     }
   }
 
   const handleSkip = () => {
+    setValidationError(null)
+    const currentSection = steps[currentStep]
+
+    if (currentSection.id === "personalInfo" || currentSection.id === "companyInfo") {
+      setValidationError("Les informations personnelles sont obligatoires et ne peuvent pas être ignorées")
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      return
+    }
+
+    // Clean up incomplete items when skipping
+    cleanupIncompleteItems()
+
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
@@ -134,7 +261,6 @@ export default function OnboardingPage() {
   const handleComplete = async () => {
     setIsLoading(true)
     try {
-      console.log("[v0] Starting onboarding completion...")
       const response = await fetch("/api/onboarding", {
         method: "PATCH",
         headers: {
@@ -145,15 +271,9 @@ export default function OnboardingPage() {
         }),
       })
 
-      console.log("[v0] Response status:", response.status)
-
       if (response.ok) {
         const result = await response.json()
-        console.log("[v0] API response:", result)
-
         const redirectUrl = result.redirectTo || "/dashboard"
-        console.log("[v0] Redirecting to:", redirectUrl)
-
         window.location.href = redirectUrl
       } else {
         const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
@@ -169,6 +289,7 @@ export default function OnboardingPage() {
   }
 
   const handleSectionChange = (sectionId: string, data: any) => {
+    setValidationError(null)
     setOnboardingData((prev) => ({
       ...prev,
       [sectionId]: data,
@@ -176,6 +297,7 @@ export default function OnboardingPage() {
   }
 
   const handleFieldChange = (field: string, value: any) => {
+    setValidationError(null)
     setOnboardingData((prev) => ({
       ...prev,
       personalInfo: {
@@ -216,7 +338,7 @@ export default function OnboardingPage() {
     }
 
     if (currentSection.isArray) {
-      const arrayType = currentSection.id as "experiences" | "education" | "languages" | "competences" 
+      const arrayType = currentSection.id as "experiences" | "education" | "languages" | "competences"
 
       return (
         <DynamicListForm
@@ -256,6 +378,13 @@ export default function OnboardingPage() {
           stepName={currentSection.title}
         >
           <div className="space-y-6">
+            {validationError && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{validationError}</AlertDescription>
+              </Alert>
+            )}
+
             {renderStepContent()}
 
             {/* Navigation */}
@@ -270,15 +399,17 @@ export default function OnboardingPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  onClick={handleSkip}
-                  disabled={isLoading}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Skip className="w-4 h-4 mr-2" />
-                  Ignorer
-                </Button>
+                {currentSection.id !== "personalInfo" && currentSection.id !== "companyInfo" && (
+                  <Button
+                    variant="ghost"
+                    onClick={handleSkip}
+                    disabled={isLoading}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <Skip className="w-4 h-4 mr-2" />
+                    Ignorer
+                  </Button>
+                )}
 
                 <Button onClick={handleNext} disabled={isLoading} className="min-w-[120px]">
                   {isLoading ? (

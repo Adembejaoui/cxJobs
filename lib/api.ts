@@ -75,3 +75,31 @@ export async function getProfileData(): Promise<ProfileData | null> {
     return null
   }
 }
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public details?: any,
+  ) {
+    super(message)
+    this.name = "ApiError"
+  }
+}
+
+export async function apiRequest<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new ApiError(data.error || "An error occurred", response.status, data.details)
+  }
+
+  return data
+}
