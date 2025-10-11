@@ -26,7 +26,11 @@ export interface Education {
   endDate?: string
   description?: string
 }
-
+export type RecruitmentStep = {
+  title: string
+  duration: string
+  description: string
+}
 export interface Competences {
   name: string
   level: "beginner" | "intermediate" | "advanced" | "expert"
@@ -95,8 +99,9 @@ export interface CompanyProfile {
   coverPhoto?: string
   values?: CompanyValue[]
   advantages?: CompanyAdvantage[]
-  langage?: CompanyLang[] 
+  langage?: CompanyLang[]
   photos?: CompanyPhoto[]
+  recruitment: RecruitmentStep[]
   createdAt: string
   updatedAt: string
   user: User

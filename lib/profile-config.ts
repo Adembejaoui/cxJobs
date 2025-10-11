@@ -1,8 +1,19 @@
 export interface ProfileField {
   name: string
   label: string
-  type: "text" | "email" | "tel" | "textarea" | "select" | "multiselect" | "checkbox" | "file" | "number" | "date"
-  predefinedCategory?: "languages" | "competences" // Add this new property
+  type:
+    | "text"
+    | "email"
+    | "tel"
+    | "textarea"
+    | "select"
+    | "multiselect"
+    | "checkbox"
+    | "file"
+    | "number"
+    | "date"
+    | "predefined"
+  predefinedCategory?: "languages" | "competences"
   placeholder?: string
   required?: boolean
   options?: { value: string; label: string }[]
@@ -93,7 +104,14 @@ export function getProfileConfig(role: string): ProfileConfig {
         addButtonText: "Ajouter une langue",
         itemTitle: "Langue",
         fields: [
-          { name: "language", label: "Langue", type: "text", required: true },
+          {
+            name: "language",
+            label: "Langue",
+            type: "predefined",
+            predefinedCategory: "languages",
+            placeholder: "Sélectionner ou entrer une langue",
+            required: true,
+          },
           {
             name: "level",
             label: "Niveau",
@@ -119,18 +137,13 @@ export function getProfileConfig(role: string): ProfileConfig {
         addButtonText: "Ajouter une compétence",
         itemTitle: "Compétence",
         fields: [
-          { name: "name", label: "Nom de la compétence", type: "text", required: true },
           {
-            name: "level",
-            label: "Niveau",
-            type: "select",
+            name: "name",
+            label: "Nom de la compétence",
+            type: "predefined",
+            predefinedCategory: "competences",
+            placeholder: "Sélectionner ou entrer une compétence",
             required: true,
-            options: [
-              { value: "beginner", label: "Débutant" },
-              { value: "intermediate", label: "Intermédiaire" },
-              { value: "advanced", label: "Avancé" },
-              { value: "expert", label: "Expert" },
-            ],
           },
         ],
       },
@@ -259,6 +272,19 @@ export function getProfileConfig(role: string): ProfileConfig {
         itemTitle: "Avantage",
         fields: [
           { name: "title", label: "Titre de l'avantage", type: "text", required: true },
+          { name: "description", label: "Description", type: "textarea", rows: 3, required: true },
+        ],
+      },
+      {
+        id: "recruitment",
+        title: "Processus de recrutement",
+        icon: "📋",
+        isArray: true,
+        addButtonText: "Ajouter une étape",
+        itemTitle: "Étape",
+        fields: [
+          { name: "title", label: "Titre de l'étape", type: "text", required: true },
+          { name: "duration", label: "Durée", type: "text", required: true, placeholder: "Ex: 1h, 30min, 2 jours" },
           { name: "description", label: "Description", type: "textarea", rows: 3, required: true },
         ],
       },

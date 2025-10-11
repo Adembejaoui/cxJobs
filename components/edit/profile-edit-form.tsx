@@ -165,29 +165,25 @@ export function ProfileEditForm({ role, initialData, onSave }: ProfileEditFormPr
               <p className="text-muted-foreground text-lg">
                 Update your {role === "candidate" ? "candidate" : "company"} profile information
               </p>
-             
             </div>
-              <div className="flex items-center gap-3">
-                 <DynamicButton
-            label="Preview"
-            variant="outline"
-            size="lg"
-            iconLeft={<Eye />}
-            onClick={() => router.push(`/dashboard/${role}/profile`)}
-          />
-          <Button
-            onClick={handleSave}
-            disabled={isSaving}
-            size="lg"
-            className="flex items-center gap-2 px-6 py-3 text-base font-medium"
-          >
-            {isSaving ? <span className="animate-spin">⏳</span> : <span>💾</span>}
-            {isSaving ? "Saving..." : "Save"}
-          </Button>
-
-         
-        </div>
-
+            <div className="flex items-center gap-3">
+              <DynamicButton
+                label="Preview"
+                variant="outline"
+                size="lg"
+                iconLeft={<Eye />}
+                onClick={() => router.push(`/dashboard/${role}/profile`)}
+              />
+              <Button
+                onClick={handleSave}
+                disabled={isSaving}
+                size="lg"
+                className="flex items-center gap-2 px-6 py-3 text-base font-medium"
+              >
+                {isSaving ? <span className="animate-spin">⏳</span> : <span>💾</span>}
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+            </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">

@@ -82,17 +82,6 @@ export const jobOfferConfig = [
     fields: [
       { name: "requirements.skills", label: "Compétences requises", type: "tags" },
       { name: "requirements.languages", label: "Langues requises", type: "tags" },
-      { name: "requirements.benefits", label: "Avantages", type: "tags" },
-    ],
-  },
-  {
-    id: "processus_recrutement",
-    title: "Processus de recrutement",
-    repeatable: true,
-    fields: [
-      { name: "title", label: "Titre de l'étape", type: "text", required: true },
-      { name: "duration", label: "Durée estimée", type: "text", required: true },
-      { name: "description", label: "Description", type: "textarea" },
     ],
   },
 ]
@@ -113,7 +102,6 @@ export const jobOfferSchema = z.object({
   requirements: z.object({
     skills: z.array(z.string()),
     languages: z.array(z.string()),
-    benefits: z.array(z.string()).optional(),
   }),
   recruitment: z.array(
     z.object({

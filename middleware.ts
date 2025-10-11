@@ -64,8 +64,6 @@ export async function middleware(request: NextRequest) {
       console.log("[v0] Authenticated user trying to access auth page - redirecting")
       if (!token.onboardingCompleted && token.role === "CANDIDATE") {
         return NextResponse.redirect(new URL("/onboarding", request.url))
-      } else if (token.role === "COMPANY" && !token.onboardingCompleted) {
-        return NextResponse.redirect(new URL("/dashboard/company/profile/edit", request.url))
       } else if (token.role === "ADMIN") {
         return NextResponse.redirect(new URL("/dashboard/admin", request.url))
       } else {
@@ -123,10 +121,6 @@ export async function middleware(request: NextRequest) {
   if (!token) {
     console.log("[v0] Unauthenticated user trying to access protected route - redirecting to home")
     return NextResponse.redirect(new URL("/", request.url))
-  }
-  if (token.role === "COMPANY" && !token.onboardingCompleted) {
-    console.log("[v0] Company without completed onboarding - redirecting to company edit")
-    return NextResponse.redirect(new URL("/dashboard/company/profile/edit", request.url))
   }
 
   console.log("[v0] Allowing access to protected route")

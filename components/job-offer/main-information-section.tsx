@@ -7,9 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { JobOfferFormData } from "@/types/jobOffer"
+import type { JobOfferFormData } from "@/types/jobOffer"
 import { contractTypes, locations, workModes } from "@/lib/jobOfferConfig"
-
 
 interface MainInformationSectionProps {
   formData: JobOfferFormData
@@ -75,33 +74,33 @@ export function MainInformationSection({ formData, onChange }: MainInformationSe
 
         {/* Salary */}
         <div className="space-y-3">
-          <Label className="flex items-center gap-1">
-            <span className="text-yellow-500">💰</span> Salaire (optionnel)
-          </Label>
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              type="number"
-              placeholder="Min"
-              value={formData.salaryMin || ""}
-              onChange={(e) => onChange("salaryMin", e.target.value ? Number(e.target.value) : undefined)}
-            />
-            <Input
-              type="number"
-              placeholder="Max"
-              value={formData.salaryMax || ""}
-              onChange={(e) => onChange("salaryMax", e.target.value ? Number(e.target.value) : undefined)}
-            />
-          </div>
           <div className="flex items-center gap-2">
             <Checkbox
               id="displaySalary"
               checked={formData.displaySalary}
               onCheckedChange={(checked) => onChange("displaySalary", checked)}
             />
-            <Label htmlFor="displaySalary" className="text-sm font-normal cursor-pointer">
-              Afficher le salaire dans l'offre
+            <Label htmlFor="displaySalary" className="text-sm font-normal cursor-pointer flex items-center gap-1">
+              <span className="text-yellow-500">💰</span> Afficher le salaire dans l'offre
             </Label>
           </div>
+
+          {formData.displaySalary && (
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                type="number"
+                placeholder="Min"
+                value={formData.salaryMin || ""}
+                onChange={(e) => onChange("salaryMin", e.target.value ? Number(e.target.value) : undefined)}
+              />
+              <Input
+                type="number"
+                placeholder="Max"
+                value={formData.salaryMax || ""}
+                onChange={(e) => onChange("salaryMax", e.target.value ? Number(e.target.value) : undefined)}
+              />
+            </div>
+          )}
         </div>
 
         {/* Work Mode */}
@@ -117,21 +116,23 @@ export function MainInformationSection({ formData, onChange }: MainInformationSe
             </Label>
           </div>
 
-          <RadioGroup
-            value={formData.workMode}
-            onValueChange={(value) => onChange("workMode", value)}
-            className="grid grid-cols-3 gap-4"
-          >
-            {workModes.map((mode) => (
-              <div key={mode.value} className="flex items-center space-x-2">
-                <RadioGroupItem value={mode.value} id={mode.value} />
-                <Label htmlFor={mode.value} className="flex items-center gap-2 cursor-pointer font-normal">
-                  <span>{mode.icon}</span>
-                  <span>{mode.label}</span>
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+          {formData.displayWorkMode && (
+            <RadioGroup
+              value={formData.workMode}
+              onValueChange={(value) => onChange("workMode", value)}
+              className="grid grid-cols-3 gap-4"
+            >
+              {workModes.map((mode) => (
+                <div key={mode.value} className="flex items-center space-x-2">
+                  <RadioGroupItem value={mode.value} id={mode.value} />
+                  <Label htmlFor={mode.value} className="flex items-center gap-2 cursor-pointer font-normal">
+                    <span>{mode.icon}</span>
+                    <span>{mode.label}</span>
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          )}
         </div>
 
         {/* Description */}

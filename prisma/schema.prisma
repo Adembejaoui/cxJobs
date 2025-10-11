@@ -78,6 +78,7 @@ model Company {
   advantages Json?   // e.g., [{ "title": "Formation continue", "description": "..." }]
   photos     Json?   // e.g., [{ "imageUrl": "xxx", "caption": "..." }]
   langage    Json?
+  recruitment Json?   // e.g., [{ "title": "Interview", "duration": "1h", "description": "..." }]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -87,6 +88,7 @@ model Company {
   @@map("companies")
   JobOffer JobOffer[]
 }
+
 model JobOffer {
   id              String      @id @default(cuid())
   title           String
@@ -100,16 +102,13 @@ model JobOffer {
   visibility      String?
   status          String 
   applicationMode Json        // { viaCxJobs: Boolean, atsUrl: String? }
-  requirements    Json        // { skills: [String], languages: [String], benefits: [String]? }
-  recruitment     Json        // [{ title, duration, description }]
-  
+  requirements    Json        // { skills: [String], languages: [String], }  
   company         Company     @relation(fields: [companyId], references: [id])
   companyId       String
 
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 }
-
 
 model CompanyInvitation {
   id        String   @id @default(cuid())

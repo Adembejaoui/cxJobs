@@ -94,6 +94,7 @@ export async function GET(request: NextRequest) {
         langage: Array.isArray(comp.langage)
           ? comp.langage.map((lang: any) => (typeof lang === "string" ? { name: lang } : lang))
           : [],
+        recruitment: Array.isArray(comp.recruitment) ? comp.recruitment : [],
       }
     }
 
@@ -224,6 +225,7 @@ export async function PATCH(request: NextRequest) {
         langage: Array.isArray(profileData.langage)
           ? profileData.langage.map((lang: any) => (typeof lang === "string" ? { name: lang } : lang))
           : [],
+        recruitment: profileData.recruitment ?? [],
       }
 
       if (profileData.name) {
@@ -285,6 +287,7 @@ export async function PATCH(request: NextRequest) {
         langage: Array.isArray(comp.langage)
           ? comp.langage.map((lang: any) => (typeof lang === "string" ? { name: lang } : lang))
           : [],
+        recruitment: Array.isArray(comp.recruitment) ? comp.recruitment : [],
       }
     }
 

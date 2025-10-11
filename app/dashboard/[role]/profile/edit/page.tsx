@@ -10,7 +10,6 @@ export default function ProfileEditPage() {
   const [profileData, setProfileData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
-  console.log("[v0] Route params:", { params, roleParam })
 
   // Convert URL role to config role format - never throw errors
   const getConfigRole = (urlRole: string): "candidate" | "company" => {

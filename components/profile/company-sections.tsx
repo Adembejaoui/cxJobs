@@ -4,7 +4,20 @@ import type { CompanyProfile } from "@/types/profile"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Building, Award, Globe, Phone, Mail, MapPin, Heart, CheckCircle, Users, Calendar, Star } from "lucide-react"
+import {
+  Building,
+  Award,
+  Globe,
+  Phone,
+  Mail,
+  MapPin,
+  Heart,
+  CheckCircle,
+  Users,
+  Calendar,
+  Star,
+  ClipboardList,
+} from "lucide-react"
 
 interface CompanySectionsProps {
   profile: CompanyProfile
@@ -137,7 +150,7 @@ export function CompanySections({ profile }: CompanySectionsProps) {
               <TabsTrigger value="about">À propos</TabsTrigger>
               <TabsTrigger value="jobs">Offres d'emploi</TabsTrigger>
               <TabsTrigger value="company-life">Vie d'entreprise</TabsTrigger>
-              <TabsTrigger value="testimonials">Témoignages</TabsTrigger>
+              <TabsTrigger value="Processus de recrutement">Processus de recrutement</TabsTrigger>
             </TabsList>
 
             <TabsContent value="about" className="space-y-6 mt-6">
@@ -156,6 +169,8 @@ export function CompanySections({ profile }: CompanySectionsProps) {
                   )}
                 </CardContent>
               </Card>
+
+              
 
               {/* Values */}
               {profile.values?.length && (
@@ -307,14 +322,40 @@ export function CompanySections({ profile }: CompanySectionsProps) {
               </div>
             </TabsContent>
 
-            <TabsContent value="testimonials" className="mt-6">
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Building className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Aucun témoignage disponible</h3>
-                  <p className="text-muted-foreground">Les témoignages des employés seront affichés ici.</p>
-                </CardContent>
-              </Card>
+            <TabsContent value="Processus de recrutement" className="mt-6">
+              {profile.recruitment?.length > 0 && (
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-6">
+                      <ClipboardList className="w-5 h-5 text-primary" />
+                      <h3 className="text-lg font-semibold text-foreground">Processus de recrutement</h3>
+                    </div>
+                    <div className="space-y-4">
+                      {profile.recruitment.map((step, index) => (
+                        <div key={index} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
+                              {index + 1}
+                            </div>
+                            {index < profile.recruitment.length - 1 && (
+                              <div className="w-0.5 h-full bg-primary/20 mt-2" />
+                            )}
+                          </div>
+                          <div className="flex-1 pb-6">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h4 className="font-semibold text-foreground">{step.title}</h4>
+                              <Badge variant="outline" className="text-xs">
+                                {step.duration}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{step.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           </Tabs>
         </div>

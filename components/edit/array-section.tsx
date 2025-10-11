@@ -72,6 +72,7 @@ export function ArraySection({ section, values, onChange }: ArraySectionProps) {
     if (item.degree) return item.degree
     if (item.company) return item.company
     if (item.language) return item.language
+    if (item.competence) return item.competence
     return `${section.itemTitle} ${index + 1}`
   }
 

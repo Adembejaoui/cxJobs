@@ -1,3 +1,5 @@
+
+
 export type ApplicationMode = {
   viaCxJobs: boolean
   atsUrl?: string
@@ -6,16 +8,12 @@ export type ApplicationMode = {
 export type Requirements = {
   skills: string[]
   languages: string[]
-  benefits?: string[]
 }
 
-export type RecruitmentStep = {
-  title: string
-  duration: string
-  description: string
-}
+
 
 export interface JobOffer {
+  status(status: any): import("react").ReactNode
   id: string
   title: string
   location: string
@@ -26,7 +24,6 @@ export interface JobOffer {
   description: string
   applicationMode: ApplicationMode
   requirements: Requirements
-  recruitment: RecruitmentStep[]
   companyId: string
   visibility: "public" | "private"
   expirationDate?: string
@@ -46,12 +43,12 @@ export interface JobOfferFormData {
   workMode: "sur site" | "hybride" | "télétravail"
   displayWorkMode: boolean
   description: string
-  status?:string
+  status? : string
   applicationMode: ApplicationMode
   requirements: Requirements
-  recruitment: RecruitmentStep[]
   visibility: "public" | "private"
   expirationDate?: string
   notifyOnApplication: boolean
   publishNow: boolean
+
 }

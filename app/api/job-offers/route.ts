@@ -20,15 +20,7 @@ const jobOfferSchema = z.object({
   requirements: z.object({
     skills: z.array(z.string()),
     languages: z.array(z.string()),
-    benefits: z.array(z.string()).optional(),
   }),
-  recruitment: z.array(
-    z.object({
-      title: z.string(),
-      duration: z.string(),
-      description: z.string(),
-    }),
-  ),
   visibility: z.enum(["public", "private"]).default("public"),
   expirationDate: z.string().optional(),
   notifyOnApplication: z.boolean().default(true),
@@ -71,7 +63,6 @@ export async function POST(request: NextRequest) {
         description: validatedData.description,
         applicationMode: validatedData.applicationMode,
         requirements: validatedData.requirements,
-        recruitment: validatedData.recruitment,
         expirationDate: validatedData.expirationDate ? new Date(validatedData.expirationDate).toDateString() : null,
         status: validatedData.publishNow ? "published" : "draft",
         companyId: company.id,

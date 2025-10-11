@@ -3,10 +3,8 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { JobOfferFormData } from "@/types/jobOffer"
+import type { JobOfferFormData } from "@/types/jobOffer"
 import { FormSection } from "./form-section"
-
-
 
 interface ApplicationModeSectionProps {
   formData: JobOfferFormData

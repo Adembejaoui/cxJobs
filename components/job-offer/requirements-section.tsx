@@ -4,9 +4,8 @@ import { FormSection } from "./form-section"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { JobOfferFormData } from "@/types/jobOffer"
+import type { JobOfferFormData } from "@/types/jobOffer"
 import { languages } from "@/lib/jobOfferConfig"
-
 
 interface RequirementsSectionProps {
   formData: JobOfferFormData
@@ -66,24 +65,7 @@ export function RequirementsSection({ formData, onChange }: RequirementsSectionP
           </div>
         </div>
 
-        {/* Benefits */}
-        <div className="space-y-2">
-          <Label htmlFor="benefits" className="flex items-center gap-1">
-            <span className="text-yellow-500">👑</span> Avantages (optionnel)
-          </Label>
-          <Textarea
-            id="benefits"
-            placeholder="Décrivez les avantages offerts (tickets restaurant, assurance, etc.)"
-            value={formData.requirements.benefits?.join("\n") || ""}
-            onChange={(e) =>
-              onChange("requirements", {
-                ...formData.requirements,
-                benefits: e.target.value.split("\n").filter((s) => s.trim()),
-              })
-            }
-            rows={3}
-          />
-        </div>
+
       </div>
     </FormSection>
   )

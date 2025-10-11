@@ -124,13 +124,59 @@ export function safeParseJSON<T>(value: any, fallback: T): T {
   }
   return value || fallback
 }
-export type PredefinedCategory = "languages" | "competences";
+
+export type PredefinedCategory = "languages" | "competences"
 
 const predefinedOptions: Record<PredefinedCategory, string[]> = {
-  languages: ["French", "English", "German", "Spanish", "Italian", "Arabic"],
-  competences: ["Problem Solving", "Communication", "Leadership", "Teamwork"],
-};
+  languages: [
+    "Français",
+    "Anglais",
+    "Espagnol",
+    "Allemand",
+    "Italien",
+    "Portugais",
+    "Arabe",
+    "Chinois",
+    "Japonais",
+    "Russe",
+    "Néerlandais",
+    "Turc",
+    "Coréen",
+  ],
+  competences: [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Node.js",
+    "Python",
+    "Java",
+    "C++",
+    "C#",
+    "PHP",
+    "Ruby",
+    "Go",
+    "Rust",
+    "SQL",
+    "MongoDB",
+    "PostgreSQL",
+    "AWS",
+    "Azure",
+    "Docker",
+    "Kubernetes",
+    "Git",
+    "Agile",
+    "Scrum",
+    "Communication",
+    "Leadership",
+    "Travail d'équipe",
+    "Résolution de problèmes",
+    "Gestion du temps",
+    "Créativité",
+    "Adaptabilité",
+  ],
+}
 
 export function getPredefinedOptions(category: PredefinedCategory): string[] {
-  return predefinedOptions[category];
+  return predefinedOptions[category] || []
 }

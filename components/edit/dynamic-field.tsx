@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import type { ProfileField } from "@/lib/profile-config"
 import { SimpleImageUpload } from "../onboarding/image-upload-field"
+import PredefinedInput from "../PredefinedInput"
+
 
 interface DynamicFieldProps {
   field: ProfileField
@@ -16,20 +18,10 @@ interface DynamicFieldProps {
 }
 
 export function DynamicField({ field, value, onChange, error }: DynamicFieldProps) {
-  const [fileName, setFileName] = useState<string>("")
   const [isUploading, setIsUploading] = useState(false)
 
   const handleChange = (newValue: any) => {
     onChange(newValue)
-  }
-
-  const handleUploadComplete = (res: any) => {
-    if (res && res[0]) {
-      const uploadedFile = res[0]
-      setFileName(uploadedFile.name)
-      onChange(uploadedFile.url) // Store the URL instead of File object
-      setIsUploading(false)
-    }
   }
 
   const handleUploadError = (error: Error) => {
@@ -39,6 +31,13 @@ export function DynamicField({ field, value, onChange, error }: DynamicFieldProp
 
   const renderField = () => {
     switch (field.type) {
+      case "predefined":
+        if (!field.predefinedCategory) {
+          console.error("Predefined field requires predefinedCategory")
+          return null
+        }
+        return <PredefinedInput category={field.predefinedCategory} value={value || ""} onChange={handleChange} />
+
       case "text":
       case "email":
       case "tel":
@@ -86,7 +85,6 @@ export function DynamicField({ field, value, onChange, error }: DynamicFieldProp
             className="min-h-[100px] bg-input border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-200 resize-none"
           />
         )
-        
 
       case "select":
         return (
@@ -127,7 +125,6 @@ export function DynamicField({ field, value, onChange, error }: DynamicFieldProp
           "from original:",
           value,
         )
-        
 
         return (
           /* Better multiselect design with improved spacing */
